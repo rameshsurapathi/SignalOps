@@ -1,0 +1,19 @@
+{
+  "incident_id": "INC-8492",
+  "service": "payment-service",
+  "kubernetes_events": [
+    {"timestamp": "2026-05-07T14:30:00Z", "type": "Warning", "reason": "OOMKilling", "message": "Memory cgroup out of memory: Killed process 1234 (java) total-vm:4194304kB, anon-rss:2097152kB"},
+    {"timestamp": "2026-05-07T14:30:05Z", "type": "Warning", "reason": "CrashLoopBackOff", "message": "Back-off restarting failed container"}
+  ],
+  "grafana_metrics": {
+    "cpu_usage_percent": 45,
+    "memory_usage_bytes": 2147483648,
+    "memory_limit_bytes": 2147483648
+  },
+  "datadog_logs": [
+    "[INFO] Processing payment batch...",
+    "[WARN] Heap memory at 95%",
+    "[ERROR] java.lang.OutOfMemoryError: Java heap space",
+    "[FATAL] Application crashing"
+  ]
+}

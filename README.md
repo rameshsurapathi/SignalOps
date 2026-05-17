@@ -1,64 +1,91 @@
-# Gemini SignalOps – Autonomous SRE Command Center
+# 🛡️ SignalOps Universal SRE Agent
 
-**"From 1000 logs → 1 decision → 1 action"**
+SignalOps is an autonomous Site Reliability Engineering (SRE) agent prototype designed to investigate, diagnose, and propose fixes for critical infrastructure incidents. 
 
-Gemini SignalOps is an AI-powered SRE agent built for the Google AI Agent Hackathon. It autonomously analyzes system issues using mock logs, metrics, and deployment histories, and provides structured root cause analysis and remediation strategies using **Gemini 1.5 Pro**.
+Built with **LangGraph**, **Google Vertex AI (Gemini 1.5 Flash)**, and the **Model Context Protocol (MCP)**, SignalOps demonstrates how modern AI can assist in safe, automated DevOps workflows.
 
-## Architecture
-- **FastAPI Backend**: Acts as the Agent Orchestrator.
-- **MCP Tools Layer**: Provides mock integrations for logs, metrics, and GitHub deploy history.
-- **Gemini 1.5 Pro (Google GenAI SDK)**: Powers the reasoning engine to deduce root causes.
-- **Streamlit Frontend**: A simple dashboard to trigger incidents and view the agent's decision flow.
+---
 
-## Project Structure
+## 🌟 Architecture Highlights
+
+SignalOps is a technical prototype designed to showcase agentic workflows for infrastructure management.
+
+### 1. Universal Agent Orchestration
+Using **LangGraph**, the agent's reasoning loop is decoupled from the specific infrastructure. This allows for flexible, multi-step diagnostic paths.
+
+```mermaid
+graph TD
+    UI[Streamlit UI] -->|Incident Trigger| Agent(LangGraph Orchestrator)
+    Agent -->|1. Analyze| LLM{Gemini 1.5 Flash}
+    Agent -->|2. Gather Context| MCP[MCP Server Bridge]
+    
+    subgraph Infrastructure Edge
+    MCP -->|Tool Call| K8s(K8s Events)
+    MCP -->|Tool Call| Grafana(Grafana Metrics)
+    MCP -->|Tool Call| Datadog(Datadog Logs)
+    MCP -->|Tool Call| Runbook(Runbook Lookup)
+    end
+    
+    MCP -->|Context Returned| Agent
+    Agent -->|3. Propose Fix| LLM
+    Agent -->|4. HITL Approval| UI
+    UI -.->|Approve/Reject| Agent
+    Agent -->|5. Apply Fix| MCP
+    Agent -->|6. Tech RCA| LLM
+    Agent -->|Final Report| UI
 ```
-signalops/
-├── backend/
-│   ├── main.py          # FastAPI application
-│   ├── agent.py         # Gemini logic and system prompt
-│   └── tools/
-│       └── mock_tools.py # Mock implementations of get_logs, get_metrics, etc.
-├── ui/
-│   └── app.py           # Streamlit dashboard
-├── data/                # (Optional) Data persistence
-├── docker-compose.yml   # For easy local running
-└── requirements.txt     # Python dependencies
+
+### 2. Model Context Protocol (MCP) Integration
+SignalOps implements a simulated **MCP Server** (`mcp_server/server.py`). The agent discovers and uses diagnostic tools over the standard MCP protocol, demonstrating how AI agents can interact with external systems like Kubernetes or monitoring suites in a standardized way.
+
+### 3. Safety-First AI Design
+Executing changes on infrastructure requires strict controls. SignalOps implements multiple layers of safety:
+*   **Human-In-The-Loop (HITL) Gate:** The agent pauses execution and requires explicit human approval before any remediation is applied.
+*   **Context Compression:** The MCP server filters logs to keep only relevant error states, reducing noise and improving LLM accuracy.
+*   **Structured Outputs:** Uses strict Pydantic schemas and `temperature=0.0` to ensure consistent and reliable responses.
+*   **Input Validation:** Strict regex and type checks prevent prompt or command injection via untrusted data.
+
+---
+
+## 🛠️ Technology Stack
+*   **Orchestration:** LangGraph
+*   **Language Model:** Google Gemini 1.5 Flash (via Vertex AI)
+*   **Tool Protocol:** Model Context Protocol (MCP)
+*   **Frontend UI:** Streamlit
+
+---
+
+## 🚨 Included Simulation Scenarios
+
+1.  **`payment-service` (OOMKill):** Diagnoses K8s container crashes due to memory limits.
+2.  **`auth-service` (DB Timeout):** Detects connection pool exhaustion causing liveness probe failures.
+3.  **`inventory-service` (Network Partition):** Identifies failing image pulls and upstream socket timeouts.
+4.  **`api-gateway` (Prometheus Alert):** High 5xx error rates due to bad canary deployments.
+5.  **`user-service` (K8s Bad Config):** CreateContainerConfigError due to missing secrets.
+
+---
+
+## 🚀 How to Run the Demo
+
+### Prerequisites
+SignalOps uses **Google Vertex AI**. You must have a GCP project and authenticated environment.
+
+1.  **Authenticate:**
+    ```bash
+    gcloud auth application-default login
+    ```
+2.  **Set Environment Variables:**
+    Create a `.env` file in the root directory:
+    ```env
+    GOOGLE_CLOUD_PROJECT="your-gcp-project-id"
+    # Vertex AI uses ADC by default, no API key needed.
+    ```
+
+### Launch
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Launch the Streamlit Frontend
+streamlit run ui/app.py
 ```
-
-## Running the Application
-
-### Option 1: Docker Compose (Recommended)
-Make sure you have Docker and Docker Compose installed.
-
-1. Set your Gemini API Key in your environment:
-   ```bash
-   export GEMINI_API_KEY="your-api-key-here"
-   ```
-2. Start the services:
-   ```bash
-   docker-compose up --build
-   ```
-3. Open Streamlit in your browser at `http://localhost:8501`
-
-### Option 2: Local Python Environment
-1. Set up a virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
-2. Export your Gemini API Key:
-   ```bash
-   export GEMINI_API_KEY="your-api-key-here"
-   ```
-3. Run the backend (Terminal 1):
-   ```bash
-   uvicorn backend.main:app --reload
-   ```
-4. Run the frontend (Terminal 2):
-   ```bash
-   streamlit run ui/app.py
-   ```
-
-## Hackathon Note
-The tools for fetching logs, metrics, and deployments are intentionally mocked to demonstrate the orchestrator's reasoning capabilities without requiring a full production Kubernetes or GCP environment setup.

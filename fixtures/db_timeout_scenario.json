@@ -1,0 +1,20 @@
+{
+  "incident_id": "INC-8493",
+  "service": "auth-service",
+  "kubernetes_events": [
+    {"timestamp": "2026-05-07T15:40:00Z", "type": "Warning", "reason": "Unhealthy", "message": "Liveness probe failed: HTTP probe failed with statuscode: 500"},
+    {"timestamp": "2026-05-07T15:42:00Z", "type": "Normal", "reason": "Killing", "message": "Container auth-service failed liveness probe, will be restarted"}
+  ],
+  "grafana_metrics": {
+    "cpu_usage_percent": 98,
+    "db_connection_pool_active": 100,
+    "db_connection_pool_max": 100,
+    "response_time_ms": 5400
+  },
+  "datadog_logs": [
+    "[INFO] Starting authentication request for user ID 8291",
+    "[WARN] Database connection acquisition taking longer than 2000ms",
+    "[ERROR] OperationalError: FATAL: remaining connection slots are reserved for non-replication superuser connections",
+    "[FATAL] Service timeout. Liveness endpoint returning 500"
+  ]
+}

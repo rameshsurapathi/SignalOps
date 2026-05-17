@@ -1,0 +1,16 @@
+{
+  "incident_id": "INC-8496",
+  "service": "user-service",
+  "kubernetes_events": [
+    {"timestamp": "2026-05-07T16:20:00Z", "type": "Warning", "reason": "Failed", "message": "Error: CreateContainerConfigError"},
+    {"timestamp": "2026-05-07T16:20:05Z", "type": "Warning", "reason": "FailedSync", "message": "Error syncing pod, skipping: secret \"user-db-credentials\" not found"}
+  ],
+  "grafana_metrics": {
+    "cpu_usage_percent": 0,
+    "memory_usage_bytes": 0,
+    "pod_restarts": 15
+  },
+  "datadog_logs": [
+    "Logs will be read from data/logs/user-service.log"
+  ]
+}

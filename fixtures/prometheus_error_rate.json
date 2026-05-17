@@ -1,0 +1,15 @@
+{
+  "incident_id": "INC-8495",
+  "service": "api-gateway",
+  "kubernetes_events": [
+    {"timestamp": "2026-05-07T16:15:00Z", "type": "Normal", "reason": "ScalingReplicaSet", "message": "Scaled up replica set api-gateway-canary to 1"}
+  ],
+  "grafana_metrics": {
+    "cpu_usage_percent": 45,
+    "http_5xx_error_rate": 0.42,
+    "http_request_rate_per_sec": 1200
+  },
+  "datadog_logs": [
+    "Logs will be read from data/logs/api-gateway.log"
+  ]
+}
