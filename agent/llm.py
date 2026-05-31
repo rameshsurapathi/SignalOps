@@ -2,12 +2,12 @@
 agent/llm.py
 
 This module handles the initialization of the Language Model (LLM) using
-Google's Gemini API via Vertex AI.
+Google's Gemini API via Google AI Studio.
 """
 
 import os
 from dotenv import load_dotenv
-from langchain_google_vertexai import ChatVertexAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 
 # Load API key from .env file
@@ -34,13 +34,13 @@ class IncidentAnalysisSchema(BaseModel):
 # =====================================================================
 def get_llm(structured: bool = False, schema_type: str = "incident"):
     """
-    Initializes and returns the Gemini model via Vertex AI with enterprise guardrails.
+    Initializes and returns the Gemini model via Google AI Studio with enterprise guardrails.
     
-    Guardrail 1: Temperature = 0.0 (Eliminates creative hallucination)
+    Guardrail 1: Temperature = 0.0 (Minimizes creative hallucination risk)
     Guardrail 2: Strict Pydantic Schema (if structured=True)
     """
-    llm = ChatVertexAI(
-        model_name="gemini-1.5-flash",
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-3.5-flash",
         temperature=0.0,
         max_output_tokens=8192
     )

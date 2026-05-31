@@ -6,8 +6,19 @@ It executes only if the human operator approves the proposed fix.
 It now uses the Gemini LLM to synthesize a highly technical Root Cause Analysis.
 """
 
+import builtins
 from langchain_core.messages import AIMessage
 from .llm import get_llm
+
+# Safe print override to prevent OSError: [Errno 5] Input/output error when running Streamlit in background/detached terminal.
+def print(*args, **kwargs):
+    try:
+        builtins.print(*args, **kwargs)
+    except OSError as e:
+        if e.errno == 5:
+            pass
+        else:
+            raise
 
 # =====================================================================
 # POST-MORTEM GENERATOR

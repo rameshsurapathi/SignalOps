@@ -41,7 +41,8 @@ This script tests all 5 scenarios and asserts on:
 ---
 
 ## 🔍 What to Look For (For Judges)
-*   **Vertex AI Integration:** The agent uses `gemini-1.5-flash` via Vertex AI for all reasoning steps.
+*   **Gemini API Integration:** The agent uses `gemini-3.5-flash` via Google AI Studio for all reasoning steps.
 *   **MCP Protocol:** Standardized tool discovery and execution.
 *   **Side-by-Side Dashboard:** Clear visualization of AI-driven synthesis vs. raw infrastructure data.
 *   **HITL Safety:** Strict gatekeeping before infrastructure changes.
+*   **2-Min Demo Video:** Playable demo file `output.mp4` in the root directory showcasing the end-to-end user workflow.

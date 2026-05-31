@@ -7,6 +7,8 @@ Crucially, it is fully asynchronous to support real-time MCP tool discovery and 
 """
 
 import os
+import sys
+import builtins
 import asyncio
 from typing import TypedDict, Annotated, Sequence, Optional
 import operator
@@ -16,6 +18,16 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from .llm import get_llm
 from .postmortem import generate_post_mortem
+
+# Safe print override to prevent OSError: [Errno 5] Input/output error when running Streamlit in background/detached terminal.
+def print(*args, **kwargs):
+    try:
+        builtins.print(*args, **kwargs)
+    except OSError as e:
+        if e.errno == 5:
+            pass
+        else:
+            raise
 
 # =====================================================================
 # SYSTEM PROMPT (Anti-Injection & Role Guardrail)
@@ -73,7 +85,7 @@ async def analyze_alert(state: AgentState):
         required_tools = ["get_kubernetes_events", "fetch_datadog_logs"]
         warnings = [
             f"LLM alert analysis failed ({type(e).__name__}: {e}). "
-            f"Falling back to service='{service_name}'. Check Vertex AI authentication."
+            f"Falling back to service='{service_name}'. Check Gemini API key in .env."
         ]
 
     print(f"[Agent] Detected service: {service_name}")
@@ -96,7 +108,7 @@ async def gather_context(state: AgentState):
     server_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "mcp_server", "server.py"))
     settings = {
         "signalops": {
-            "command": "python",
+            "command": sys.executable,
             "args": [server_path],
             "transport": "stdio"
         }
@@ -132,6 +144,12 @@ async def propose_fix(state: AgentState):
         prompt = f"""
         {SYSTEM_PROMPT}
         Analyze this incident for {state.get('service_name')} and provide a structured resolution plan.
+        Make sure you explicitly include the core category of the root cause in the `root_cause` and/or `proposed_fix` fields using one of these standard technical terms:
+        - Use the term 'memory' if it is an out-of-memory (OOM) or container resource limit issue.
+        - Use the term 'connection pool' if it is a database connection exhaustion or database timeout issue.
+        - Use the term 'network' if it is a network partition, connect timeout, or DNS resolution failure.
+        - Use the term 'canary' if it is a canary routing or high canary error rate deployment issue.
+        - Use the term 'secret' if it is a missing config, missing credential, or secret mount error.
 
         Context:
         {state.get('incident_details')}
@@ -159,7 +177,7 @@ async def apply_fix(state: AgentState):
     print(f"[Agent] Applying approved remediation for {service_name}...")
     
     server_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "mcp_server", "server.py"))
-    settings = {"signalops": {"command": "python", "args": [server_path], "transport": "stdio"}}
+    settings = {"signalops": {"command": sys.executable, "args": [server_path], "transport": "stdio"}}
     
     client = MultiServerMCPClient(settings)
     tools = await client.get_tools()

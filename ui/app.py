@@ -6,12 +6,48 @@ It connects to the LangGraph workflow, displays intermediate reasoning steps,
 and provides the vital Human-In-The-Loop (HITL) gate for approving fixes.
 """
 
+import sys
+import os
+
+# =====================================================================
+# GLOBAL STREAM WRAPPER (Prevents OSError: [Errno 5] Input/output error on detached terminals)
+# =====================================================================
+class SafeStream:
+    def __init__(self, original_stream):
+        self.original_stream = original_stream
+
+    def write(self, data):
+        if self.original_stream is not None:
+            try:
+                self.original_stream.write(data)
+            except OSError as e:
+                if e.errno == 5:
+                    pass
+                else:
+                    raise
+
+    def flush(self):
+        if self.original_stream is not None:
+            try:
+                self.original_stream.flush()
+            except OSError as e:
+                if e.errno == 5:
+                    pass
+                else:
+                    raise
+
+    def __getattr__(self, name):
+        if self.original_stream is not None:
+            return getattr(self.original_stream, name)
+        raise AttributeError(name)
+
+sys.stdout = SafeStream(sys.stdout)
+sys.stderr = SafeStream(sys.stderr)
+
 import streamlit as st
 import time
 import asyncio
 from langchain_core.messages import HumanMessage
-import sys
-import os
 
 # Add the parent directory to the path so we can import 'agent'
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -31,7 +67,7 @@ _, main_col, _ = st.columns([1, 10, 1])
 
 with main_col:
     st.title("🛡️ SignalOps Universal SRE Agent")
-    st.markdown("Powered by LangGraph, Vertex AI, and Model Context Protocol (MCP)")
+    st.markdown("Powered by LangGraph, Gemini 3.5 Flash, and Model Context Protocol (MCP)")
 
     # =====================================================================
     # CUSTOM CSS (Premium Aesthetics)

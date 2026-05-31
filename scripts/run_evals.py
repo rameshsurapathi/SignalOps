@@ -55,7 +55,11 @@ async def run_eval():
     
     results = []
     
-    for case in EVAL_CASES:
+    for idx, case in enumerate(EVAL_CASES):
+        if idx > 0:
+            print("[Evals] Sleeping 6 seconds to respect Gemini API rate limits...")
+            await asyncio.sleep(6)
+            
         print(f"\n[Case] {case['name']}")
         print(f"[Input] {case['alert']}")
         
