@@ -14,7 +14,7 @@ graph TD
     Agent -->|1. Analyze| LLM{Gemini 1.5 Flash}
     Agent -->|2. Gather Context| MCP[MCP Server Bridge]
     
-    subgraph Infrastructure Edge (Simulated)
+    subgraph "Infrastructure Edge (Simulated)"
     MCP -->|Diagnostic| K8s(K8s Events)
     MCP -->|Diagnostic| Grafana(Grafana Metrics)
     MCP -->|Diagnostic| Datadog(Datadog Logs)
