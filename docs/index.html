@@ -14,12 +14,13 @@
     <header class="hero">
         <div class="container">
             <div class="badge-group">
-                <span class="badge">Google AI Agents Hackathon</span>
-                <span class="badge badge-gemini">Gemini 3.5 Flash</span>
-                <span class="badge">LangGraph</span>
+                <span class="badge">✓ MCP Native</span>
+                <span class="badge badge-gemini">✓ Gemini 3.5</span>
+                <span class="badge">✓ LangGraph Orchestrated</span>
+                <span class="badge" style="border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05); color: var(--accent-green);">✓ HITL Approved</span>
             </div>
-            <h1>Automate Incident Diagnosis &<br>Remediation with SignalOps</h1>
-            <p>A decoupled reasoning engine that connects to your infrastructure via Model Context Protocol (MCP), compresses raw alerts, requests human confirmation, and automatically applies fixes.</p>
+            <h1>Autonomous Investigation.<br>Human-Controlled Remediation.</h1>
+            <p>AI-Powered Incident Diagnosis & Trusted Remediation. Connects to your infrastructure via Model Context Protocol (MCP), compresses telemetry, and recommends safe, cost-aware fixes.</p>
             <div class="hero-actions">
                 <a href="#demo" class="btn btn-primary">Watch Demo Video</a>
                 <a href="#simulator" class="btn btn-secondary">Interactive Scenario Simulator</a>
@@ -27,6 +28,51 @@
             </div>
         </div>
     </header>
+
+    <!-- =====================================================================
+       BUSINESS IMPACT SECTION
+       ==================================================================== -->
+    <section class="business-impact">
+        <div class="container">
+            <div class="impact-card">
+                <h2>Why SignalOps?</h2>
+                <p class="impact-intro">Production infrastructure incidents take SREs an average of <strong>15 to 30 minutes</strong> to manually diagnose. SignalOps automates the analysis loop to reduce Mean Time To Resolution (MTTR) from minutes to seconds.</p>
+                <div class="impact-grid">
+                    <div class="impact-item">
+                        <span class="impact-icon">🔄</span>
+                        <div>
+                            <h4>Telemetry Correlation</h4>
+                            <p>Correlates logs, metrics, and Kubernetes events instantly to remove context-switching and accelerate troubleshooting.</p>
+                        </div>
+                    </div>
+                    <div class="impact-item">
+                        <span class="impact-icon">🛡</span>
+                        <div>
+                            <h4>Trusted Analysis</h4>
+                            <p>Generates deterministic, clear root-cause reports using Gemini structured outputs and strict Pydantic models.</p>
+                        </div>
+                    </div>
+                    <div class="impact-item">
+                        <span class="impact-icon">📈</span>
+                        <div>
+                            <h4>Remediation Recommender</h4>
+                            <p>Suggests precise fixes with confidence scores and estimated infrastructure cost impacts to prevent blind patching.</p>
+                        </div>
+                    </div>
+                    <div class="impact-item">
+                        <span class="impact-icon">🔇</span>
+                        <div>
+                            <h4>Prevent Alert Fatigue</h4>
+                            <p>Edge compression filters out standard system noise, passing only high-signal warning/error states to the reasoning loop.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="impact-footer">
+                    <strong>Business Result:</strong> Faster recovery, lower system downtime, improved reliability, and optimized cloud spend.
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- =====================================================================
        DEMO VIDEO SECTION
@@ -129,14 +175,40 @@
                         <div class="ai-output-box">
                             <div class="ai-meta">
                                 <span style="width: 6px; height: 6px; background-color: var(--accent-green); border-radius: 50%;"></span>
-                                SignalOps Verification Active
+                                SignalOps Active Verification
                             </div>
-                            <div id="ai-rca" class="ai-rca">
-                                Loading analysis...
+                            
+                            <div class="structured-field">
+                                <span class="field-label">Issue</span>
+                                <span id="field-issue" class="field-value">Loading...</span>
                             </div>
+                            
+                            <div class="structured-field">
+                                <span class="field-label">Root Cause</span>
+                                <span id="field-root-cause" class="field-value">Loading...</span>
+                            </div>
+                            
+                            <div class="structured-row">
+                                <div class="structured-field half">
+                                    <span class="field-label">Confidence</span>
+                                    <div><span id="field-confidence" class="confidence-badge">Loading...</span></div>
+                                </div>
+                                <div class="structured-field half">
+                                    <span class="field-label">Cost Impact</span>
+                                    <span id="field-cost" class="field-value">Loading...</span>
+                                </div>
+                            </div>
+                            
+                            <div class="structured-field">
+                                <span class="field-label">Evidence</span>
+                                <ul id="field-evidence" class="field-value-list">
+                                    <!-- Loaded dynamically -->
+                                </ul>
+                            </div>
+                            
                             <div id="ai-action-container" class="ai-action">
-                                <div class="ai-action-title">Proposed Fix</div>
-                                <div id="ai-action-text" class="ai-action-text">Loading fix...</div>
+                                <div class="ai-action-title">Recommended Fix</div>
+                                <div id="ai-action-text" class="ai-action-text">Loading...</div>
                             </div>
                         </div>
                     </div>
@@ -222,45 +294,85 @@
                 statusClass: "red",
                 statusText: "CRITICAL FAILURE - OOMKILL DETECTED",
                 telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T14:30:00Z",\n    "type": "Warning",\n    "reason": "OOMKilling",\n    "message": "Memory cgroup out of memory: Killed process 1234 (java) total-vm:4194304kB, anon-rss:2097152kB"\n  },\n  {\n    "timestamp": "2026-05-07T14:30:05Z",\n    "type": "Warning",\n    "reason": "CrashLoopBackOff",\n    "message": "Back-off restarting failed container"\n  }\n]\n\n--- GRAFANA METRICS ---\n{\n  "cpu_usage_percent": 45,\n  "memory_usage_bytes": 2147483648,\n  "memory_limit_bytes": 2147483648\n}\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T14:29:50Z [WARN] Heap memory at 95%\n2026-05-07T14:29:58Z [ERROR] java.lang.OutOfMemoryError: Java heap space\n2026-05-07T14:30:00Z [FATAL] Application crashing`,
-                rca: "The payment-service JVM container crashed due to resource starvation. The cgroup killed the process (OOMKill) after heap utilization reached 95% and memory allocation hit the hard limit of 2147483648 bytes (2GiB). Subsequent container restarts triggered a CrashLoopBackOff state.",
-                proposedFix: "Increase Kubernetes memory limit to 512Mi above the active limit and trigger a rollout restart of payment-service pods.",
-                appliedFix: "K8s Patch Applied: Increased memory limits to 512Mi and restarted payment-service pods successfully. Service restored to healthy status."
+                issue: "Payment service crash (CrashLoopBackOff)",
+                rootCause: "OOMKilled due to container memory limit exhaustion",
+                confidence: "98% ✅",
+                costImpact: "+$12.00 / month (Requires larger pod memory footprint)",
+                evidence: [
+                    "Kubernetes cgroup triggered OOMKilling of PID 1234",
+                    "JVM heap memory reached 95% threshold warning",
+                    "Grafana metrics show memory_usage_bytes matched limit at 2GiB"
+                ],
+                proposedFix: "Increase memory limit configuration to 2.5Gi and perform rolling restart of payment-service pods.",
+                appliedFix: "K8s Patch Applied: Increased memory limits to 2.5Gi and restarted payment-service pods. Service restored to healthy status."
             },
             dbtimeout: {
                 title: "INCIDENT INC-8493: auth-service DB Timeout",
                 statusClass: "red",
                 statusText: "DEGRADED PERFORMANCE - PROBE FAILURE",
                 telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T15:40:00Z",\n    "type": "Warning",\n    "reason": "Unhealthy",\n    "message": "Liveness probe failed: HTTP probe failed with statuscode: 500"\n  },\n  {\n    "timestamp": "2026-05-07T15:42:00Z",\n    "type": "Normal",\n    "reason": "Killing",\n    "message": "Container auth-service failed liveness probe, will be restarted"\n  }\n]\n\n--- GRAFANA METRICS ---\n{\n  "cpu_usage_percent": 98,\n  "db_connection_pool_active": 100,\n  "db_connection_pool_max": 100,\n  "response_time_ms": 5400\n}\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T15:39:10Z [WARN] Database connection acquisition taking longer than 2000ms\n2026-05-07T15:39:45Z [ERROR] OperationalError: FATAL: remaining connection slots are reserved for non-replication superuser connections\n2026-05-07T15:40:00Z [FATAL] Service timeout. Liveness endpoint returning 500`,
-                rca: "The auth-service is failing liveness probes due to database connection pool exhaustion. Currently, active connections are at 100/100 (100% capacity), and response times have spiked to 5400ms. The application logs indicate PostgreSQL connection slots are fully saturated, throwing FATAL OperationalErrors.",
-                proposedFix: "Flush the database connection pool via the auth-service management API, and increase max_connections to 200 in the config map.",
-                appliedFix: "DB Config Updated: Flushed active connection pools and adjusted max_connections to 200 on auth-service. Connections stabilized at 24/200."
+                issue: "Database connection timeouts on auth-service",
+                rootCause: "Database connection pool exhaustion and slot locking",
+                confidence: "95% ✅",
+                costImpact: "$0.00 / month (Configuration optimization)",
+                evidence: [
+                    "Grafana metrics show db_connection_pool_active at 100/100 limit",
+                    "Application response times spiked to 5400ms",
+                    "Logs confirm OperationalError FATAL: remaining connection slots reserved"
+                ],
+                proposedFix: "Flush the database connection pool via management API, and increase PostgreSQL max_connections setting to 200.",
+                appliedFix: "DB Config Updated: Flushed active pool and updated max_connections to 200. Connections stabilized at 24/200."
             },
             netpartition: {
                 title: "INCIDENT INC-8494: inventory-service Net Partition",
                 statusClass: "red",
                 statusText: "CRITICAL FAILURE - INTER-SERVICE CONNECTIVITY TIMEOUT",
                 telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T16:00:00Z",\n    "type": "Warning",\n    "reason": "FailedToPullImage",\n    "message": "rpc error: code = Unknown desc = Error response from daemon: Get https://registry-1.docker.io/v2/: dial tcp: lookup registry-1.docker.io on 10.96.0.10:53: read udp 10.244.1.5:41234->10.96.0.10:53: i/o timeout"\n  }\n]\n\n--- GRAFANA METRICS ---\n{\n  "cpu_usage_percent": 12,\n  "memory_usage_bytes": 150000000,\n  "network_rx_bytes": 0,\n  "network_tx_bytes": 0\n}\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T15:59:15Z [WARN] Retrying connection to warehouse API (attempt 1/3)\n2026-05-07T15:59:30Z [ERROR] java.net.SocketTimeoutException: connect timed out to warehouse.internal.api:443\n2026-05-07T16:00:00Z [FATAL] Unable to reach upstream dependencies. Failing health checks.`,
-                rca: "A severe network partition is preventing inventory-service from resolving DNS entries and connecting to upstream APIs. CoreDNS (10.96.0.10) requests are timing out, blocking registry pulls and failing the connection to warehouse.internal.api.",
-                proposedFix: "Apply service mesh/DNS fallback rules to bypass the stale proxy node and trigger a rolling update of CoreDNS to clear cache.",
-                appliedFix: "DNS Routing Repaired: Pushed updated CoreDNS caching rules to bypass the failing proxy node. DNS resolution and network traffic restored."
+                issue: "Upstream API timeout & registry pull failure",
+                rootCause: "CoreDNS cache staleness and network proxy partition",
+                confidence: "92% ✅",
+                costImpact: "$0.00 / month (DNS/routing repair)",
+                evidence: [
+                    "K8s events list FailedToPullImage lookup registry-1.docker.io read udp timeout",
+                    "Logs show java.net.SocketTimeoutException to warehouse.internal.api",
+                    "VPC network interfaces show network_rx_bytes dropped to 0"
+                ],
+                proposedFix: "Bypass the failing proxy node via service mesh rules, and restart CoreDNS pods to clear cache.",
+                appliedFix: "DNS Routing Repaired: CoreDNS caching rules updated. Inbound/outbound traffic restored successfully."
             },
             errorrate: {
                 title: "INCIDENT INC-8495: api-gateway Canary Rate",
                 statusClass: "red",
                 statusText: "DEGRADED PERFORMANCE - ERROR SPIKE (15%)",
                 telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T16:15:00Z",\n    "type": "Normal",\n    "reason": "ScalingReplicaSet",\n    "message": "Scaled up replica set api-gateway-canary to 1"\n  }\n]\n\n--- GRAFANA METRICS ---\n{\n  "cpu_usage_percent": 30,\n  "response_time_ms": 120,\n  "production_error_rate_percent": 0.1,\n  "canary_error_rate_percent": 15.0\n}\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T16:16:10Z [WARN] Canary routing anomaly detected\n2026-05-07T16:16:35Z [ERROR] upstream connect error or disconnect/reset before headers. reset reason: connection failure\n2026-05-07T16:16:50Z [ERROR] HTTP 503 Service Unavailable returned to client`,
-                rca: "A canary routing anomaly has occurred following a deployment scale-up. The canary deployment (api-gateway-canary) is generating a 15% error rate (HTTP 503 Service Unavailable) due to upstream connect reset errors, while the production replica set remains healthy (0.1% error rate).",
-                proposedFix: "Initiate immediate rollback of the canary deployment to prevent additional user impact, restoring API gateway routing to the stable v1.4.2 image.",
-                appliedFix: "Rollback Complete: Reverted canary deployment of api-gateway. Ingress routing restored 100% of traffic to the stable v1.4.2 version. Error rate returned to 0%."
+                issue: "503 Service Unavailable spikes in gateway routing",
+                rootCause: "Faulty canary deployment configuration mismatch",
+                confidence: "99% ✅",
+                costImpact: "$0.00 / month (Immediate rollback)",
+                evidence: [
+                    "Canary error rate spiked to 15.0% while production remains at 0.1%",
+                    "Grafana metrics register ScalingReplicaSet scaling up api-gateway-canary",
+                    "Central gateway logs register connection failure reset reasons"
+                ],
+                proposedFix: "Roll back the api-gateway canary deployment to the previous stable image version v1.4.2.",
+                appliedFix: "Rollback Complete: Canary deployment reverted. Ingress routing restored 100% of traffic to stable v1.4.2."
             },
             badconfig: {
                 title: "INCIDENT INC-8496: user-service Bad Config",
                 statusClass: "red",
                 statusText: "CRITICAL FAILURE - CONFIG MOUNT ERROR",
                 telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T16:45:00Z",\n    "type": "Warning",\n    "reason": "FailedMount",\n    "message": "MountVolume.SetUp failed for volume \\"db-credentials\\" : secret \\"db-credentials\\" not found"\n  },\n  {\n    "timestamp": "2026-05-07T16:45:10Z",\n    "type": "Warning",\n    "reason": "FailedCreatePodSandBox",\n    "message": "Failed to create sandbox: CreateContainerConfigError"\n  }\n]\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T16:44:50Z [WARN] Secret mount path not found\n2026-05-07T16:44:58Z [ERROR] Init container failed to read user-db-credentials\n2026-05-07T16:45:00Z [FATAL] Pod startup aborted due to missing configuration`,
-                rca: "The user-service containers are failing to launch (CreateContainerConfigError) because the required Kubernetes Secret 'db-credentials' does not exist in the active namespace. Pod startup was aborted because the init container could not read database configuration values.",
-                proposedFix: "Re-create the missing K8s Secret 'db-credentials' from the central Vault store and trigger a roll-out of the user-service pods.",
-                appliedFix: "Config Corrected: Re-created the 'db-credentials' Secret in the active namespace. Pod sandbox created successfully, and user-service is now running."
+                issue: "Pod launch failure (CreateContainerConfigError)",
+                rootCause: "Missing Kubernetes secret 'db-credentials' mount path",
+                confidence: "97% ✅",
+                costImpact: "$0.00 / month (Configuration fix)",
+                evidence: [
+                    "K8s events list FailedMount: volume db-credentials secret not found",
+                    "FailedCreatePodSandBox warning on user-service pod",
+                    "Init container logged FATAL: Pod startup aborted due to missing configuration"
+                ],
+                proposedFix: "Re-create missing Kubernetes secret 'db-credentials' from Vault and trigger rollout.",
+                appliedFix: "Secret Re-created: secret db-credentials successfully synced from Vault. Pod sandbox scaled successfully."
             }
         };
         
@@ -285,7 +397,11 @@
             
             // Show Loading state
             document.getElementById('raw-telemetry').textContent = "// Fetching compressed telemetry via MCP server...\n// Waiting for response...";
-            document.getElementById('ai-rca').textContent = "Analyzing telemetry context...";
+            document.getElementById('field-issue').textContent = "Analyzing...";
+            document.getElementById('field-root-cause').textContent = "Analyzing...";
+            document.getElementById('field-confidence').textContent = "Analyzing...";
+            document.getElementById('field-cost').textContent = "Analyzing...";
+            document.getElementById('field-evidence').innerHTML = "<li>Analyzing...</li>";
             document.getElementById('ai-action-text').textContent = "Waiting for analysis...";
             document.getElementById('btn-approve').style.display = 'inline-flex';
             document.getElementById('btn-approve').textContent = "Approve Fix & Remediation";
@@ -296,7 +412,22 @@
             setTimeout(() => {
                 // Populate data
                 document.getElementById('raw-telemetry').textContent = data.telemetry;
-                document.getElementById('ai-rca').textContent = data.rca;
+                document.getElementById('field-issue').textContent = data.issue;
+                document.getElementById('field-root-cause').textContent = data.rootCause;
+                
+                const confBadge = document.getElementById('field-confidence');
+                confBadge.textContent = data.confidence;
+                
+                document.getElementById('field-cost').textContent = data.costImpact;
+                
+                const list = document.getElementById('field-evidence');
+                list.innerHTML = "";
+                data.evidence.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    list.appendChild(li);
+                });
+                
                 document.getElementById('ai-action-text').textContent = data.proposedFix;
                 document.getElementById('status-text').textContent = data.statusText;
             }, 1000);
