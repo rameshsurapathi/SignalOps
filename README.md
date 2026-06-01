@@ -119,18 +119,18 @@ Select any "🚨" alert button in the Streamlit UI and observe:
 
 ---
 
-## ❓ FAQ & Troubleshooting
+### ❓ FAQ & Troubleshooting
 
-## Q1: I am seeing 429 RESOURCE_EXHAUSTED rate-limit errors. How do I fix this?
+**Q1: I am seeing 429 RESOURCE_EXHAUSTED rate-limit errors. How do I fix this?**
 *   **Cause:** Google AI Studio free tier keys have a rate limit of 15 Requests Per Minute (RPM) and a low daily request quota.
 *   **Solution:** We have added a 6-second delay between cases in `run_evals.py` to prevent rate-limiting during testing. If you still encounter this, wait 60 seconds for the window to reset, or use a Pay-As-You-Go API key in your `.env` file to unlock up to 1,000 RPM.
 
-## Q2: I get ModuleNotFoundError when running the scripts.
+**Q2: I get ModuleNotFoundError when running the scripts.**
 *   **Solution:** Ensure you have activated your virtual environment and installed the dependencies inside it:
     ```bash
     source venv/bin/activate
     pip install -r requirements.txt
     ```
 
-## Q3: How do I transition this simulated prototype into a real-world environment?
+**Q3: How do I transition this simulated prototype into a real-world environment?**
 *   **Solution:** That is the power of MCP! The reasoning engine in `agent/graph.py` is decoupled from the infrastructure tools. To point this to a real Kubernetes cluster or actual Datadog instance, you simply replace the `mcp_server/server.py` command configuration with the endpoint of a real production-grade MCP server. The core LangGraph agent requires zero code modifications.
