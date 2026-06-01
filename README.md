@@ -84,7 +84,9 @@ streamlit run ui/app.py
 ```
 
 ### 5. Watch the Demo Video
-A 2-minute demo video showing the agent in action is available at `output.mp4` in the root of this repository.
+A 2-minute demo video showing the agent in action is playable directly below:
+
+<video src="output.mp4" width="100%" controls></video>
 
 ---
 
