@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalOps - Universal SRE Agent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- =====================================================================
+       HERO SECTION
+       ===================================================================== -->
+    <header class="hero">
+        <div class="container">
+            <div class="badge-group">
+                <span class="badge">Google AI Agents Hackathon</span>
+                <span class="badge badge-gemini">Gemini 3.5 Flash</span>
+                <span class="badge">LangGraph</span>
+            </div>
+            <h1>Automate Incident Diagnosis &<br>Remediation with SignalOps</h1>
+            <p>A decoupled reasoning engine that connects to your infrastructure via Model Context Protocol (MCP), compresses raw alerts, requests human confirmation, and automatically applies fixes.</p>
+            <div class="hero-actions">
+                <a href="#demo" class="btn btn-primary">Watch Demo Video</a>
+                <a href="#simulator" class="btn btn-secondary">Interactive Scenario Simulator</a>
+                <a href="https://github.com/rameshsurapathi/SignalOps" target="_blank" class="btn btn-secondary">Explore GitHub Repository</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- =====================================================================
+       DEMO VIDEO SECTION
+       ===================================================================== -->
+    <section id="demo" class="video-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>📺 2-Minute Demo Video</h2>
+                <p>See how SignalOps processes alerts, displays side-by-side incident analysis, and pauses for Human-In-The-Loop gate approval.</p>
+            </div>
+            <div class="video-wrapper">
+                <video src="output.mp4" controls preload="metadata" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'><rect width='800' height='450' fill='%23111827'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239CA3AF'>SignalOps Demo Video</text></svg>"></video>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+       FEATURES SECTION
+       ===================================================================== -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>🛡️ Production-Shaped Security & Guardrails</h2>
+                <p>SignalOps is engineered to run in enterprise environments, prioritizing safety, transparency, and interoperability.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Model Context Protocol (MCP)</h3>
+                    <p>Decouples reasoning from infrastructure. The agent communicates with tools via standardized MCP, allowing hot-swapping simulated platforms with real Kubernetes clusters and Datadog targets.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Gemini 3.5 Flash Orchestration</h3>
+                    <p>Leverages Google Gemini's advanced reasoning capabilities and structured schema enforcement (via strict Pydantic parsing) with zero creative temperature (0.0) to eliminate hallucinations.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⏸️</div>
+                    <h3>Human-In-The-Loop Safety</h3>
+                    <p>Uses LangGraph's stateful checkpointers to interrupt the graph execution at the hitl_gate. No changes to the infrastructure can occur without explicit, authenticated human approval.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🗜️</div>
+                    <h3>Diagnostic Context Compression</h3>
+                    <p>The MCP server processes large volumes of telemetry data (logs, metrics) at the edge, filtering out standard debug noise to pass clean, high-signal warning/error logs to the LLM context.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+       INTERACTIVE SCENARIO SIMULATOR
+       ===================================================================== -->
+    <section id="simulator" class="simulator">
+        <div class="container">
+            <div class="section-title">
+                <h2>⚡ Interactive Scenario Simulator</h2>
+                <p>Select any of the five simulated production incidents below to see how the SRE agent gathers raw context, synthesizes root cause analysis, and resolves the issue.</p>
+            </div>
+            
+            <div class="simulator-card">
+                <div class="simulator-header">
+                    <h3>Incident Command Dashboard</h3>
+                    <div id="sim-status" class="simulator-status">
+                        <span class="status-dot"></span>
+                        <span id="status-text">SYSTEM ACTIVE - READY TO INGEST</span>
+                    </div>
+                </div>
+                
+                <!-- Tab Buttons for Scenario Selection -->
+                <div class="scenario-buttons">
+                    <button class="scenario-btn active" onclick="loadScenario('oomkill')">🚨 OOMKill (payment-service)</button>
+                    <button class="scenario-btn" onclick="loadScenario('dbtimeout')">🚨 DB Timeout (auth-service)</button>
+                    <button class="scenario-btn" onclick="loadScenario('netpartition')">🚨 Net Partition (inventory)</button>
+                    <button class="scenario-btn" onclick="loadScenario('errorrate')">🚨 Canary Rate (api-gateway)</button>
+                    <button class="scenario-btn" onclick="loadScenario('badconfig')">🚨 Bad Config (user-service)</button>
+                </div>
+                
+                <!-- Side-by-Side Panel -->
+                <div class="simulator-layout">
+                    <!-- Left: Raw Telemetry -->
+                    <div>
+                        <div class="panel-title">
+                            <span>🛠️ Raw Diagnostic Data (MCP)</span>
+                            <span style="color: var(--text-muted); font-size: 0.75rem;">Source: Kubernetes & Datadog</span>
+                        </div>
+                        <div id="raw-telemetry" class="code-container">Loading telemetry data...</div>
+                    </div>
+                    
+                    <!-- Right: AI Synthesis -->
+                    <div>
+                        <div class="panel-title">
+                            <span>🧠 AI Root Cause Analysis (Gemini)</span>
+                            <span style="color: var(--text-muted); font-size: 0.75rem;">Model: gemini-3.5-flash</span>
+                        </div>
+                        <div class="ai-output-box">
+                            <div class="ai-meta">
+                                <span style="width: 6px; height: 6px; background-color: var(--accent-green); border-radius: 50%;"></span>
+                                SignalOps Verification Active
+                            </div>
+                            <div id="ai-rca" class="ai-rca">
+                                Loading analysis...
+                            </div>
+                            <div id="ai-action-container" class="ai-action">
+                                <div class="ai-action-title">Proposed Fix</div>
+                                <div id="ai-action-text" class="ai-action-text">Loading fix...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bottom controls -->
+                <div class="simulator-actions">
+                    <button class="btn btn-secondary" onclick="resetSimulator()">Clear Command State</button>
+                    <button id="btn-approve" class="btn btn-primary" onclick="applySimulatorFix()">Approve Fix & Remediation</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+       ARCHITECTURE SECTION
+       ===================================================================== -->
+    <section class="architecture">
+        <div class="container">
+            <div class="section-title">
+                <h2>🏗️ Decoupled Stateful Workflow Architecture</h2>
+                <p>The reasoning engine handles analysis, context gathering, and reports. Execution is delegated to the MCP Edge, gated by human authority.</p>
+            </div>
+            
+            <div class="arch-card">
+                <div class="flow-container">
+                    <div class="flow-node">
+                        <div class="node-num">Node 1</div>
+                        <div class="node-name">Analyze Alert</div>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-node">
+                        <div class="node-num">Node 2</div>
+                        <div class="node-name">Gather Context</div>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-node">
+                        <div class="node-num">Node 3</div>
+                        <div class="node-name">Propose Fix</div>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-node gate">
+                        <div class="node-num" style="color: var(--accent-purple);">HITL Gate</div>
+                        <div class="node-name">Pause for Approval</div>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-node fix">
+                        <div class="node-num" style="color: var(--accent-green);">Node 4</div>
+                        <div class="node-name">Apply Fix</div>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="flow-node">
+                        <div class="node-num">Node 5</div>
+                        <div class="node-name">Post-Mortem</div>
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); max-width: 750px; margin: 32px auto 0 auto; font-size: 0.95rem;">Built using stateful LangGraph workflows. If the operator approves the fix during the interactive pause, the agent executes the corresponding remediation block and uses Gemini to synthesize a post-mortem containing the exact metrics, logs, and action items.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+       FOOTER SECTION
+       ===================================================================== -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SignalOps - Built for Google AI Agents Hackathon</p>
+            <div class="footer-links">
+                <a href="https://github.com/rameshsurapathi/SignalOps" target="_blank">GitHub Repository</a>
+                <a href="https://github.com/rameshsurapathi/SignalOps/blob/master/README.md" target="_blank">Documentation</a>
+                <a href="https://github.com/rameshsurapathi/SignalOps/blob/master/DEMO.md" target="_blank">Demo Guide</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =====================================================================
+       SIMULATOR INTERACTIVE LOGIC (JAVASCRIPT)
+       ===================================================================== -->
+    <script>
+        const SCENARIOS = {
+            oomkill: {
+                title: "INCIDENT INC-8492: payment-service OOMKill",
+                statusClass: "red",
+                statusText: "CRITICAL FAILURE - OOMKILL DETECTED",
+                telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T14:30:00Z",\n    "type": "Warning",\n    "reason": "OOMKilling",\n    "message": "Memory cgroup out of memory: Killed process 1234 (java) total-vm:4194304kB, anon-rss:2097152kB"\n  },\n  {\n    "timestamp": "2026-05-07T14:30:05Z",\n    "type": "Warning",\n    "reason": "CrashLoopBackOff",\n    "message": "Back-off restarting failed container"\n  }\n]\n\n--- GRAFANA METRICS ---\n{\n  "cpu_usage_percent": 45,\n  "memory_usage_bytes": 2147483648,\n  "memory_limit_bytes": 2147483648\n}\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T14:29:50Z [WARN] Heap memory at 95%\n2026-05-07T14:29:58Z [ERROR] java.lang.OutOfMemoryError: Java heap space\n2026-05-07T14:30:00Z [FATAL] Application crashing`,
+                rca: "The payment-service JVM container crashed due to resource starvation. The cgroup killed the process (OOMKill) after heap utilization reached 95% and memory allocation hit the hard limit of 2147483648 bytes (2GiB). Subsequent container restarts triggered a CrashLoopBackOff state.",
+                proposedFix: "Increase Kubernetes memory limit to 512Mi above the active limit and trigger a rollout restart of payment-service pods.",
+                appliedFix: "K8s Patch Applied: Increased memory limits to 512Mi and restarted payment-service pods successfully. Service restored to healthy status."
+            },
+            dbtimeout: {
+                title: "INCIDENT INC-8493: auth-service DB Timeout",
+                statusClass: "red",
+                statusText: "DEGRADED PERFORMANCE - PROBE FAILURE",
+                telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T15:40:00Z",\n    "type": "Warning",\n    "reason": "Unhealthy",\n    "message": "Liveness probe failed: HTTP probe failed with statuscode: 500"\n  },\n  {\n    "timestamp": "2026-05-07T15:42:00Z",\n    "type": "Normal",\n    "reason": "Killing",\n    "message": "Container auth-service failed liveness probe, will be restarted"\n  }\n]\n\n--- GRAFANA METRICS ---\n{\n  "cpu_usage_percent": 98,\n  "db_connection_pool_active": 100,\n  "db_connection_pool_max": 100,\n  "response_time_ms": 5400\n}\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T15:39:10Z [WARN] Database connection acquisition taking longer than 2000ms\n2026-05-07T15:39:45Z [ERROR] OperationalError: FATAL: remaining connection slots are reserved for non-replication superuser connections\n2026-05-07T15:40:00Z [FATAL] Service timeout. Liveness endpoint returning 500`,
+                rca: "The auth-service is failing liveness probes due to database connection pool exhaustion. Currently, active connections are at 100/100 (100% capacity), and response times have spiked to 5400ms. The application logs indicate PostgreSQL connection slots are fully saturated, throwing FATAL OperationalErrors.",
+                proposedFix: "Flush the database connection pool via the auth-service management API, and increase max_connections to 200 in the config map.",
+                appliedFix: "DB Config Updated: Flushed active connection pools and adjusted max_connections to 200 on auth-service. Connections stabilized at 24/200."
+            },
+            netpartition: {
+                title: "INCIDENT INC-8494: inventory-service Net Partition",
+                statusClass: "red",
+                statusText: "CRITICAL FAILURE - INTER-SERVICE CONNECTIVITY TIMEOUT",
+                telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T16:00:00Z",\n    "type": "Warning",\n    "reason": "FailedToPullImage",\n    "message": "rpc error: code = Unknown desc = Error response from daemon: Get https://registry-1.docker.io/v2/: dial tcp: lookup registry-1.docker.io on 10.96.0.10:53: read udp 10.244.1.5:41234->10.96.0.10:53: i/o timeout"\n  }\n]\n\n--- GRAFANA METRICS ---\n{\n  "cpu_usage_percent": 12,\n  "memory_usage_bytes": 150000000,\n  "network_rx_bytes": 0,\n  "network_tx_bytes": 0\n}\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T15:59:15Z [WARN] Retrying connection to warehouse API (attempt 1/3)\n2026-05-07T15:59:30Z [ERROR] java.net.SocketTimeoutException: connect timed out to warehouse.internal.api:443\n2026-05-07T16:00:00Z [FATAL] Unable to reach upstream dependencies. Failing health checks.`,
+                rca: "A severe network partition is preventing inventory-service from resolving DNS entries and connecting to upstream APIs. CoreDNS (10.96.0.10) requests are timing out, blocking registry pulls and failing the connection to warehouse.internal.api.",
+                proposedFix: "Apply service mesh/DNS fallback rules to bypass the stale proxy node and trigger a rolling update of CoreDNS to clear cache.",
+                appliedFix: "DNS Routing Repaired: Pushed updated CoreDNS caching rules to bypass the failing proxy node. DNS resolution and network traffic restored."
+            },
+            errorrate: {
+                title: "INCIDENT INC-8495: api-gateway Canary Rate",
+                statusClass: "red",
+                statusText: "DEGRADED PERFORMANCE - ERROR SPIKE (15%)",
+                telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T16:15:00Z",\n    "type": "Normal",\n    "reason": "ScalingReplicaSet",\n    "message": "Scaled up replica set api-gateway-canary to 1"\n  }\n]\n\n--- GRAFANA METRICS ---\n{\n  "cpu_usage_percent": 30,\n  "response_time_ms": 120,\n  "production_error_rate_percent": 0.1,\n  "canary_error_rate_percent": 15.0\n}\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T16:16:10Z [WARN] Canary routing anomaly detected\n2026-05-07T16:16:35Z [ERROR] upstream connect error or disconnect/reset before headers. reset reason: connection failure\n2026-05-07T16:16:50Z [ERROR] HTTP 503 Service Unavailable returned to client`,
+                rca: "A canary routing anomaly has occurred following a deployment scale-up. The canary deployment (api-gateway-canary) is generating a 15% error rate (HTTP 503 Service Unavailable) due to upstream connect reset errors, while the production replica set remains healthy (0.1% error rate).",
+                proposedFix: "Initiate immediate rollback of the canary deployment to prevent additional user impact, restoring API gateway routing to the stable v1.4.2 image.",
+                appliedFix: "Rollback Complete: Reverted canary deployment of api-gateway. Ingress routing restored 100% of traffic to the stable v1.4.2 version. Error rate returned to 0%."
+            },
+            badconfig: {
+                title: "INCIDENT INC-8496: user-service Bad Config",
+                statusClass: "red",
+                statusText: "CRITICAL FAILURE - CONFIG MOUNT ERROR",
+                telemetry: `--- KUBERNETES EVENTS ---\n[\n  {\n    "timestamp": "2026-05-07T16:45:00Z",\n    "type": "Warning",\n    "reason": "FailedMount",\n    "message": "MountVolume.SetUp failed for volume \\"db-credentials\\" : secret \\"db-credentials\\" not found"\n  },\n  {\n    "timestamp": "2026-05-07T16:45:10Z",\n    "type": "Warning",\n    "reason": "FailedCreatePodSandBox",\n    "message": "Failed to create sandbox: CreateContainerConfigError"\n  }\n]\n\n--- COMPRESSED DATADOG LOGS ---\n2026-05-07T16:44:50Z [WARN] Secret mount path not found\n2026-05-07T16:44:58Z [ERROR] Init container failed to read user-db-credentials\n2026-05-07T16:45:00Z [FATAL] Pod startup aborted due to missing configuration`,
+                rca: "The user-service containers are failing to launch (CreateContainerConfigError) because the required Kubernetes Secret 'db-credentials' does not exist in the active namespace. Pod startup was aborted because the init container could not read database configuration values.",
+                proposedFix: "Re-create the missing K8s Secret 'db-credentials' from the central Vault store and trigger a roll-out of the user-service pods.",
+                appliedFix: "Config Corrected: Re-created the 'db-credentials' Secret in the active namespace. Pod sandbox created successfully, and user-service is now running."
+            }
+        };
+        
+        let currentScenario = 'oomkill';
+        
+        function loadScenario(key) {
+            currentScenario = key;
+            const data = SCENARIOS[key];
+            
+            // Update active state of buttons
+            const buttons = document.querySelectorAll('.scenario-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent.includes(key === 'oomkill' ? 'OOMKill' : 
+                                              key === 'dbtimeout' ? 'DB Timeout' : 
+                                              key === 'netpartition' ? 'Net Partition' : 
+                                              key === 'errorrate' ? 'Canary Rate' : 'Bad Config')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Show Loading state
+            document.getElementById('raw-telemetry').textContent = "// Fetching compressed telemetry via MCP server...\n// Waiting for response...";
+            document.getElementById('ai-rca').textContent = "Analyzing telemetry context...";
+            document.getElementById('ai-action-text').textContent = "Waiting for analysis...";
+            document.getElementById('btn-approve').style.display = 'inline-flex';
+            document.getElementById('btn-approve').textContent = "Approve Fix & Remediation";
+            
+            document.getElementById('sim-status').className = 'simulator-status red';
+            document.getElementById('status-text').innerHTML = `<span class="status-dot pulse"></span>ANALYZING - INGESTING TELEMETRY`;
+            
+            setTimeout(() => {
+                // Populate data
+                document.getElementById('raw-telemetry').textContent = data.telemetry;
+                document.getElementById('ai-rca').textContent = data.rca;
+                document.getElementById('ai-action-text').textContent = data.proposedFix;
+                document.getElementById('status-text').textContent = data.statusText;
+            }, 1000);
+        }
+        
+        function applySimulatorFix() {
+            const data = SCENARIOS[currentScenario];
+            document.getElementById('status-text').innerHTML = `<span class="status-dot pulse"></span>REMEDIATION IN PROGRESS...`;
+            document.getElementById('btn-approve').textContent = "Applying Fix...";
+            
+            setTimeout(() => {
+                document.getElementById('sim-status').className = 'simulator-status green';
+                document.getElementById('status-text').innerHTML = `<span class="status-dot"></span>REMEDIATION COMPLETE - RUNNING`;
+                document.getElementById('ai-action-text').textContent = data.appliedFix;
+                document.getElementById('btn-approve').style.display = 'none';
+            }, 1200);
+        }
+        
+        function resetSimulator() {
+            loadScenario(currentScenario);
+        }
+        
+        // Initial Load
+        window.onload = () => {
+            loadScenario('oomkill');
+        };
+    </script>
+</body>
+</html>
