@@ -5,7 +5,7 @@ Built with **LangGraph**, **Google Gemini 3.5 Flash**, and the **Model Context P
 ## 📺 2-Minute Demo Video
 A 2-minute demo video showing the agent in action is playable directly below:
 
-![SignalOps Demo Video](output.mp4)
+<video src="https://raw.githubusercontent.com/rameshsurapathi/AI_SRE_Agent/master/output.mp4" width="100%" controls></video>
 
 ---
 
