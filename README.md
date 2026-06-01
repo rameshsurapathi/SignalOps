@@ -1,6 +1,11 @@
 # 🛡️ SignalOps Universal SRE Agent
 
-Built with **LangGraph**, **Google Gemini 2.5 Flash**, and the **Model Context Protocol (MCP)**, SignalOps demonstrates a safe, production-shaped approach to AI-driven DevOps.
+Built with **LangGraph**, **Google Gemini 3.5 Flash**, and the **Model Context Protocol (MCP)**, SignalOps demonstrates a safe, production-shaped approach to AI-driven DevOps.
+
+## 📺 2-Minute Demo Video
+A 2-minute demo video showing the agent in action is playable directly below:
+
+<video src="output.mp4" width="100%" controls></video>
 
 ---
 
@@ -82,11 +87,6 @@ pip install -r requirements.txt
 ```bash
 streamlit run ui/app.py
 ```
-
-### 5. Watch the Demo Video
-A 2-minute demo video showing the agent in action is playable directly below:
-
-<video src="output.mp4" width="100%" controls></video>
 
 ---
 
